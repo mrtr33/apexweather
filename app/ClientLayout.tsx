@@ -3,6 +3,7 @@
 import { ReactNode, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Navigation from './components/Navigation';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -52,6 +53,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           </footer>
         </>
       )}
+      
+      {/* Add Vercel Speed Insights */}
+      <SpeedInsights />
     </>
   );
 } 

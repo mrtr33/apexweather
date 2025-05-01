@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import WeatherForecast from '@/app/components/WeatherForecast';
 import Link from 'next/link';
 import DraggablePanel from '@/app/components/DraggablePanel';
+import FixedPanel from '@/app/components/FixedPanel';
 
 // Dynamically import the TrackMap to handle SSR issues
 const TrackMap = dynamic(() => import('@/app/components/TrackMap'), {
@@ -148,23 +149,20 @@ export default function RaceDetailPage() {
   return (
     <div className="fixed inset-0 flex p-0 m-0 bg-gray-900 text-gray-100">
       {/* Full-screen map background with lighter theme */}
-      <div className="absolute inset-0 z-0">
+      <div className="w-full h-full lg:pr-[550px]">
         {race && <TrackMap 
           race={race} 
           height="100vh" 
-          fullscreen={true} 
-          darkMode={true}
           mapStyle="dark"
-          key={race.id}
           showPrecipitation={true}
           showClouds={true}
         />}
       </div>
       
-      {/* Draggable information panel */}
-      <DraggablePanel title="Race Information" width="550px">
+      {/* Fixed information panel */}
+      <FixedPanel title="Race Information" width="550px">
         {/* Header and series selector */}
-        <div className="p-5 border-b border-gray-800 drag-handle cursor-grab">
+        <div className="p-5 border-b border-gray-800">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-bold text-white">
               {race.name}
@@ -285,7 +283,7 @@ export default function RaceDetailPage() {
         <div className="border-t border-gray-800 p-3 text-center">
           <span className="text-sm text-gray-500">ApexWeather</span>
         </div>
-      </DraggablePanel>
+      </FixedPanel>
     </div>
   );
 } 

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/react-window": "^1.8.8",
+    "@vercel/speed-insights": "^1.2.0",
     "leaflet": "^1.9.4",
     "next": "15.3.0",
     "react": "^19.0.0",

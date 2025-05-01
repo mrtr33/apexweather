@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { WeatherData } from '../types';
 import { FixedSizeList as List } from 'react-window';
 import { useDebounce } from 'use-debounce';
@@ -56,28 +56,30 @@ interface HourlyRowProps {
 const HourlyRow = ({ index, style, data }: HourlyRowProps) => {
   const hour = data.hours[index];
   return (
-    <div style={style} className="flex flex-col items-center min-w-[70px] mx-3">
+    <div style={style} className="flex flex-col items-center min-w-[70px] mx-3 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
       <div className={`text-sm font-medium ${data.textTertiary}`}>
         {data.formatTime(hour.dt)}
       </div>
       <img 
         src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`} 
         alt={hour.weather[0].description} 
-        className="w-12 h-12"
+        className="w-10 h-10"
       />
       <div className={`text-sm font-semibold ${data.textPrimary}`}>
         {Math.round(hour.temp)}°
       </div>
-      <div className="flex items-center">
-        <svg className="w-3 h-3 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M13 7H7v6h6V7z" />
-        </svg>
-        <span className="text-xs text-blue-500">
-          {Math.round(hour.pop * 100)}%
-        </span>
+      <div className="flex items-center justify-center w-full">
+        <div className="flex items-center text-center">
+          <svg className="w-3 h-3 text-blue-500 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 7H7v6h6V7z" />
+          </svg>
+          <span className="text-xs text-blue-500 whitespace-nowrap">
+            {Math.round(hour.pop * 100)}%
+          </span>
+        </div>
       </div>
       {hour.rain && (
-        <div className="text-xs text-blue-600">
+        <div className="text-xs text-blue-600 mt-1">
           {hour.rain['1h'].toFixed(1)} mm
         </div>
       )}
@@ -94,6 +96,7 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
   const [error, setError] = useState<string | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<number>(0);
   const [viewportWidth, setViewportWidth] = useState(1000);
+  const abortControllerRef = useRef<AbortController | null>(null);
   
   // Set viewport width for virtualized list
   useEffect(() => {
@@ -103,36 +106,47 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
         setViewportWidth(window.innerWidth);
       };
       
-      // Set initial size
+      // Set initial size on mount only
       setViewportWidth(window.innerWidth);
       
-      // Add event listener
-      window.addEventListener('resize', handleResize);
+      // Add event listener with passive option for better performance
+      window.addEventListener('resize', handleResize, { passive: true });
       
       // Clean up
       return () => window.removeEventListener('resize', handleResize);
     }
   }, []);
 
-  // Add localStorage caching
+  // Add localStorage caching with safeguards
   const cacheKey = useMemo(() => 
-    `weather-${lat}-${lng}`, 
+    `weather-${lat.toFixed(4)}-${lng.toFixed(4)}`, 
     [lat, lng]
   );
 
+  // Load cached data with try-catch and expiration
   useEffect(() => {
-    try {
-      const cachedData = localStorage.getItem(cacheKey);
-      if (cachedData) {
+    const loadCachedData = () => {
+      try {
+        const cachedData = localStorage.getItem(cacheKey);
+        if (!cachedData) return false;
+        
         const { current: cachedCurrent, hourly: cachedHourly, timestamp } = JSON.parse(cachedData);
         // Only use cache if it's less than 30 minutes old
         if (timestamp && Date.now() - timestamp < 30 * 60 * 1000) {
           setCurrent(cachedCurrent);
           setHourly(cachedHourly);
+          setLoading(false);
+          return true;
         }
+      } catch (e) {
+        console.error('Error reading from cache:', e);
       }
-    } catch (e) {
-      console.error('Error reading from cache:', e);
+      return false;
+    };
+
+    if (!loadCachedData()) {
+      // If no valid cache is found, fetch fresh data
+      fetchFreshWeather();
     }
   }, [cacheKey]);
 
@@ -140,26 +154,50 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
   useEffect(() => {
     if (current && hourly.length > 0) {
       try {
-        localStorage.setItem(cacheKey, JSON.stringify({ 
+        const cacheData = { 
           current, 
-          hourly, 
+          hourly: hourly.slice(0, 24), // Limit cached data size
           timestamp: Date.now() 
-        }));
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
       } catch (e) {
         console.error('Error writing to cache:', e);
+        // Try to clear storage if it might be full
+        try {
+          localStorage.removeItem(cacheKey);
+        } catch { /* Silent fail */ }
       }
     }
   }, [current, hourly, cacheKey]);
   
-  // Function to fetch fresh weather data
+  // Function to fetch fresh weather data with abort controller
   const fetchFreshWeather = async () => {
+    // Cancel any in-flight requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+    
     try {
       setLoading(true);
       
-      // Use server-side API route to fetch weather data
-      console.log(`Fetching weather data for ${lat},${lng}`);
+      // Use server-side API route to fetch weather data with sanitized coordinates
+      const sanitizedLat = parseFloat(lat.toFixed(6));
+      const sanitizedLng = parseFloat(lng.toFixed(6));
+      
+      console.log(`Fetching weather data for ${sanitizedLat},${sanitizedLng}`);
       const response = await fetch(
-        `/api/weather?lat=${lat}&lng=${lng}`
+        `/api/weather?lat=${sanitizedLat}&lng=${sanitizedLng}`,
+        { 
+          signal,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-cache' 
+        }
       );
       
       if (!response.ok) {
@@ -178,7 +216,6 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
       }
       
       const data = await response.json();
-      console.log('Weather data received successfully');
       
       // Format current weather data
       if (data.current) {
@@ -224,6 +261,12 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
       setError(null);
       setLastFetchTime(Date.now());
     } catch (err) {
+      // Don't set error if the request was aborted intentionally
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Weather fetch aborted');
+        return;
+      }
+      
       console.error('Failed to fetch weather data:', err);
       setError('Failed to load weather forecast. Using existing race data instead.');
       
@@ -280,7 +323,7 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
     }
   };
   
-  // Initial fetch on component mount
+  // Initial fetch on component mount with cleanup
   useEffect(() => {
     fetchFreshWeather();
     
@@ -289,16 +332,21 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
       fetchFreshWeather();
     }, 15 * 60 * 1000);
     
-    // Clean up interval on unmount
-    return () => clearInterval(intervalId);
+    // Clean up interval and abort controller on unmount
+    return () => {
+      clearInterval(intervalId);
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [lat, lng, existingWeather]);
   
-  // Add a manual refresh button handler
+  // Add a manual refresh button handler with debounce protection
   const handleRefresh = () => {
-    fetchFreshWeather();
+    debouncedRefresh();
   };
   
-  // Add memoization for hourly data
+  // Add memoization for hourly data - should only calculate when hourly changes
   const memoizedHourly = useMemo(() => hourly.map(hour => ({
     dt: hour.dt,
     temp: Math.round(hour.temp),
@@ -312,6 +360,12 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
   const formatTime = (timestamp: number) => {
     return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
+  
+  // Memoize the hourly data used in the rendering to prevent recalculation
+  const hourlyForDisplay = useMemo(() => 
+    memoizedHourly.slice(0, 12),
+    [memoizedHourly]
+  );
   
   // Calculate time since last fetch
   const timeAgo = () => {
@@ -402,7 +456,7 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
         </div>
         <button 
           onClick={handleRefresh}
-          className={`${refreshButtonColor} p-2 rounded-full`}
+          className={`${refreshButtonColor} p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
           disabled={loading}
         >
           {loading ? (
@@ -421,71 +475,49 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
       {/* Current weather */}
       {current && (
         <div className={`p-4 ${currentWeatherBg}`}>
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between">
-            <div className="flex items-center mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="flex items-center">
               <img 
                 src={`https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`} 
                 alt={current.weather[0].description}
-                width="80"
-                height="80"
-                className="mr-3"
+                width="70"
+                height="70"
+                className="mr-3 flex-shrink-0"
               />
               <div>
-                <div className={`text-3xl font-bold ${textPrimary}`}>{Math.round(current.temp)}°C</div>
-                <div className={`${textSecondary} capitalize text-lg`}>{current.weather[0].description}</div>
+                <div className={`text-3xl font-bold ${textPrimary} leading-tight`}>
+                  {Math.round(current.temp)}°
+                </div>
+                <div className={`${textSecondary} capitalize text-base`}>
+                  {current.weather[0].description}
+                </div>
                 {current.feels_like !== undefined && (
-                  <div className={`text-sm mt-1 ${textTertiary}`}>
-                    Feels like {Math.round(current.feels_like)}°C
+                  <div className={`text-sm ${textTertiary}`}>
+                    Feels like {Math.round(current.feels_like)}°
                   </div>
                 )}
               </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 mt-2">
-              <div className={`text-sm ${textTertiary}`}>
-                <span className="inline-block w-24 font-medium">Humidity:</span>
-                <span>{current.humidity}%</span>
+            <div className="grid grid-cols-3 gap-2 w-full md:w-auto">
+              <div className={`bg-white/10 dark:bg-gray-800 rounded-lg p-2 shadow-sm ${textTertiary}`}>
+                <div className="font-medium text-xs mb-1">Humidity</div>
+                <div className="text-base font-semibold">{current.humidity}%</div>
               </div>
               
-              <div className={`text-sm ${textTertiary}`}>
-                <span className="inline-block w-24 font-medium">Wind:</span>
-                <span>
-                  {current.wind_speed.toFixed(1)} m/s {current.wind_deg !== undefined && getWindDirection(current.wind_deg)}
-                </span>
+              <div className={`bg-white/10 dark:bg-gray-800 rounded-lg p-2 shadow-sm ${textTertiary}`}>
+                <div className="font-medium text-xs mb-1">Wind</div>
+                <div className="text-base font-semibold whitespace-nowrap">
+                  {current.wind_speed.toFixed(1)} m/s
+                </div>
               </div>
               
-              <div className={`text-sm ${textTertiary}`}>
-                <span className="inline-block w-24 font-medium">Pressure:</span>
-                <span>{current.pressure} hPa</span>
+              <div className={`bg-white/10 dark:bg-gray-800 rounded-lg p-2 shadow-sm ${textTertiary}`}>
+                <div className="font-medium text-xs mb-1">Pressure</div>
+                <div className="text-base font-semibold">
+                  {current.pressure} hPa
+                </div>
               </div>
-              
-              {current.visibility !== undefined && (
-                <div className={`text-sm ${textTertiary}`}>
-                  <span className="inline-block w-24 font-medium">Visibility:</span>
-                  <span>{formatVisibility(current.visibility)}</span>
-                </div>
-              )}
-              
-              {current.uvi !== undefined && (
-                <div className={`text-sm ${textTertiary}`}>
-                  <span className="inline-block w-24 font-medium">UV Index:</span>
-                  <span>{current.uvi.toFixed(1)}</span>
-                </div>
-              )}
-              
-              {current.clouds !== undefined && (
-                <div className={`text-sm ${textTertiary}`}>
-                  <span className="inline-block w-24 font-medium">Cloud Cover:</span>
-                  <span>{current.clouds}%</span>
-                </div>
-              )}
-              
-              {existingWeather?.rainfallAmount !== undefined && (
-                <div className={`text-sm ${textTertiary}`}>
-                  <span className="inline-block w-24 font-medium">Rainfall:</span>
-                  <span>{existingWeather.rainfallAmount.toFixed(1)} mm</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -495,22 +527,32 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
       {hourly.length > 0 && (
         <div className="p-4">
           <h4 className={`font-medium mb-3 ${textPrimary}`}>24-Hour Forecast</h4>
-          <div className="overflow-x-auto">
-            <List
-              height={150}
-              itemCount={hourly.length}
-              itemSize={80}
-              layout="horizontal"
-              width={Math.min(hourly.length * 80, viewportWidth - 50)}
-              itemData={{
-                hours: hourly,
-                formatTime,
-                textTertiary,
-                textPrimary
-              }}
-            >
-              {HourlyRow}
-            </List>
+          <div className="overflow-x-auto pb-2">
+            <div className="flex space-x-2">
+              {hourlyForDisplay.map((hour, index) => (
+                <div key={hour.dt} className="flex-shrink-0 w-[70px] flex flex-col items-center p-2 bg-white/5 dark:bg-gray-800/50 rounded-lg">
+                  <div className={`text-xs font-medium ${textTertiary}`}>
+                    {formatTime(hour.dt)}
+                  </div>
+                  <img 
+                    src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`} 
+                    alt={hour.weather[0].description}
+                    className="w-10 h-10"
+                  />
+                  <div className={`text-sm font-semibold ${textPrimary}`}>
+                    {Math.round(hour.temp)}°
+                  </div>
+                  <div className="text-xs text-blue-500 flex items-center justify-center">
+                    <span>{Math.round(hour.pop * 100)}%</span>
+                  </div>
+                  {hour.rain && (
+                    <div className="text-xs text-blue-600 mt-0.5">
+                      {hour.rain['1h'].toFixed(1)} mm
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
