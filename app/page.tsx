@@ -154,9 +154,9 @@ export default function Home() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-gray-900 text-gray-100">
+    <div className="fixed inset-0 flex flex-col md:flex-row h-screen w-screen bg-gray-900 text-gray-100">
       {/* Left side - Map (taking full width on mobile, about 70% on larger screens) */}
-      <div className="h-1/2 md:h-full md:flex-grow border-b md:border-b-0 md:border-r border-gray-700">
+      <div className="h-[40vh] md:h-full md:flex-grow border-b md:border-b-0 md:border-r border-gray-700">
         {currentRace && currentRace.location && currentRace.location.coordinates && (
           <div className="w-full h-full flex items-center justify-center text-center">
             <TrackMap 
@@ -172,14 +172,14 @@ export default function Home() {
       </div>
       
       {/* Right side - Information panels (full width on mobile, fixed width on desktop) */}
-      <div className="h-1/2 md:h-full w-full md:w-[450px] flex flex-col bg-gray-900 overflow-y-auto">
+      <div className="h-[60vh] md:h-full w-full md:w-[450px] flex flex-col bg-gray-900 overflow-hidden">
         {/* Header */}
-        <div className="p-3 md:p-4 border-b border-gray-700">
+        <div className="p-3 md:p-4 border-b border-gray-700 flex-shrink-0">
           <h1 className="text-xl font-bold text-center">TrackWeather</h1>
         </div>
         
         {/* Series Selection */}
-        <div className="p-3 md:p-4 border-b border-gray-700">
+        <div className="p-3 md:p-4 border-b border-gray-700 flex-shrink-0">
           <select 
             value={selectedSeriesId}
             onChange={(e) => handleSeriesSelect(e.target.value)}
@@ -194,50 +194,53 @@ export default function Home() {
           </select>
         </div>
         
-        {/* Race Information */}
-        <div className="p-3 md:p-4 border-b border-gray-700 flex-shrink-0 h-[200px] md:h-[250px] overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-2">Race Information</h2>
-          <div className="space-y-2 text-sm">
-            <p>
-              <span className="text-gray-400">Event:</span> {currentRace.name}
-            </p>
-            {currentRace.location && (
-              <>
-                <p>
-                  <span className="text-gray-400">Location:</span> {currentRace.location.name}, {currentRace.location.city}, {currentRace.location.country}
-                </p>
-                <p>
-                  <span className="text-gray-400">Circuit:</span> {currentRace.location.name}
-                </p>
-                {currentRace.location.coordinates && (
+        {/* Scrollable content container */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Race Information */}
+          <div className="p-3 md:p-4 border-b border-gray-700">
+            <h2 className="text-lg font-semibold mb-2">Race Information</h2>
+            <div className="space-y-2 text-sm">
+              <p>
+                <span className="text-gray-400">Event:</span> {currentRace.name}
+              </p>
+              {currentRace.location && (
+                <>
                   <p>
-                    <span className="text-gray-400">Coordinates:</span> {currentRace.location.coordinates.lat.toFixed(4)}, {currentRace.location.coordinates.lng.toFixed(4)}
+                    <span className="text-gray-400">Location:</span> {currentRace.location.name}, {currentRace.location.city}, {currentRace.location.country}
                   </p>
-                )}
-              </>
+                  <p>
+                    <span className="text-gray-400">Circuit:</span> {currentRace.location.name}
+                  </p>
+                  {currentRace.location.coordinates && (
+                    <p>
+                      <span className="text-gray-400">Coordinates:</span> {currentRace.location.coordinates.lat.toFixed(4)}, {currentRace.location.coordinates.lng.toFixed(4)}
+                    </p>
+                  )}
+                </>
+              )}
+              <p>
+                <span className="text-gray-400">Date:</span> {new Date(currentRace.date).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          
+          {/* Weather Information */}
+          <div className="p-3 md:p-4">
+            <h2 className="text-lg font-semibold mb-2 md:mb-4">Weather Information</h2>
+            {currentRace && currentRace.location && currentRace.location.coordinates && (
+              <WeatherForecast 
+                lat={currentRace.location.coordinates.lat}
+                lng={currentRace.location.coordinates.lng}
+                locationName={`${currentRace.location.name}, ${currentRace.location.city}`}
+                darkMode={true}
+                existingWeather={currentRace.weatherData}
+              />
             )}
-            <p>
-              <span className="text-gray-400">Date:</span> {new Date(currentRace.date).toLocaleDateString()}
-            </p>
           </div>
         </div>
         
-        {/* Weather Information */}
-        <div className="p-3 md:p-4 flex-1 overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-2 md:mb-4">Weather Information</h2>
-          {currentRace && currentRace.location && currentRace.location.coordinates && (
-            <WeatherForecast 
-              lat={currentRace.location.coordinates.lat}
-              lng={currentRace.location.coordinates.lng}
-              locationName={`${currentRace.location.name}, ${currentRace.location.city}`}
-              darkMode={true}
-              existingWeather={currentRace.weatherData}
-            />
-          )}
-        </div>
-        
         {/* Ko-fi Support Button */}
-        <div className="p-3 md:p-4 border-t border-gray-700 flex justify-center">
+        <div className="p-3 md:p-4 border-t border-gray-700 flex justify-center flex-shrink-0">
           <a 
             href='https://ko-fi.com/E1E61DD630' 
             target='_blank' 
