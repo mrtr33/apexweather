@@ -27,6 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Preconnects to reduce layout jank from late-loading assets */}
+        <link rel="preconnect" href="https://{s}.tile.openstreetmap.org" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://{s}.basemaps.cartocdn.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://server.arcgisonline.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://stamen-tiles-a.ssl.fastly.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://openweathermap.org" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://storage.ko-fi.com" crossOrigin="anonymous" />
+
+        {/* Preload frequently used marker assets to avoid icon pop-in */}
+        <link rel="preload" as="image" href="/marker-icon.png" />
+        <link rel="preload" as="image" href="/marker-shadow.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background dark:bg-darkBg text-gray-900 dark:text-white`}
       >

@@ -18,6 +18,8 @@ interface TrackMapProps {
   markerColor?: string;
   showPrecipitation?: boolean;
   showClouds?: boolean;
+  defer?: boolean;
+  idleDelayMs?: number;
 }
 
 // Create a custom overlay component for OpenWeatherMap layers
@@ -263,23 +265,35 @@ function LeafletMap({ race, height, fullscreen = false, darkMode = false, mapSty
 }
 
 // Create a client-side only component that wraps the map
-function TrackMapComponent({ race, height = '400px', fullscreen = false, darkMode = false, mapStyle = 'standard', markerColor = 'blue', showPrecipitation = false, showClouds = false }: TrackMapProps) {
+function TrackMapComponent({ race, height = '400px', fullscreen = false, darkMode = false, mapStyle = 'standard', markerColor = 'blue', showPrecipitation = false, showClouds = false, defer = false, idleDelayMs = 300 }: TrackMapProps) {
   const containerClasses = fullscreen ? 
     "h-full w-full" : 
     "rounded-lg overflow-hidden shadow-md";
   
+  const [shouldRenderMap, setShouldRenderMap] = useState(!defer);
+  
+  useEffect(() => {
+    if (!defer) return;
+    const timerId = window.setTimeout(() => setShouldRenderMap(true), idleDelayMs);
+    return () => window.clearTimeout(timerId);
+  }, [defer, idleDelayMs]);
+  
   return (
     <div style={{ height, width: '100%' }} className={containerClasses}>
-      <LeafletMap 
-        race={race} 
-        height={height} 
-        fullscreen={fullscreen} 
-        darkMode={darkMode} 
-        mapStyle={mapStyle}
-        markerColor={markerColor}
-        showPrecipitation={showPrecipitation}
-        showClouds={showClouds}
-      />
+      {shouldRenderMap ? (
+        <LeafletMap 
+          race={race} 
+          height={height} 
+          fullscreen={fullscreen} 
+          darkMode={darkMode} 
+          mapStyle={mapStyle}
+          markerColor={markerColor}
+          showPrecipitation={showPrecipitation}
+          showClouds={showClouds}
+        />
+      ) : (
+        <LoadingMap height={height} fullscreen={fullscreen} darkMode={darkMode} />
+      )}
     </div>
   );
 }

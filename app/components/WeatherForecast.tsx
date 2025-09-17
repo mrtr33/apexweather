@@ -63,6 +63,8 @@ const HourlyRow = ({ index, style, data }: HourlyRowProps) => {
       <img 
         src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`} 
         alt={hour.weather[0].description} 
+        width="40"
+        height="40"
         className="w-10 h-10"
       />
       <div className={`text-sm font-semibold ${data.textPrimary}`}>
@@ -537,6 +539,8 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
                   <img 
                     src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}.png`} 
                     alt={hour.weather[0].description}
+                    width="40"
+                    height="40"
                     className="w-10 h-10"
                   />
                   <div className={`text-sm font-semibold ${textPrimary}`}>

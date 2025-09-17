@@ -13,13 +13,32 @@ export async function GET(
     
     // The last three segments should be z, x, y - we can safely get them from the path
     // Format: /api/map/precipitation/{z}/{x}/{y}
-    const z = segments[segments.length - 3];
-    const x = segments[segments.length - 2];
-    const y = segments[segments.length - 1];
+    const zRaw = segments[segments.length - 3];
+    const xRaw = segments[segments.length - 2];
+    const yRaw = segments[segments.length - 1];
     
-    if (!z || !x || !y) {
+    if (!zRaw || !xRaw || !yRaw) {
       console.error('Missing map parameters:', { z, x, y, path });
       return new Response('Invalid map parameters', { status: 400 });
+    }
+    
+    // Validate strictly numeric and within tile coordinate bounds
+    const isDigits = (s: string) => /^[0-9]+$/.test(s);
+    if (!isDigits(zRaw) || !isDigits(xRaw) || !isDigits(yRaw)) {
+      return new Response('Invalid map parameters', { status: 400 });
+    }
+    
+    const z = Number(zRaw);
+    const x = Number(xRaw);
+    const y = Number(yRaw);
+    
+    // Reasonable zoom range for RainViewer tiles
+    if (z < 0 || z > 18) {
+      return new Response('Zoom out of range', { status: 400 });
+    }
+    const maxIndex = Math.pow(2, z) - 1;
+    if (x < 0 || y < 0 || x > maxIndex || y > maxIndex) {
+      return new Response('Tile coordinates out of range', { status: 400 });
     }
     
     // Log request for debugging

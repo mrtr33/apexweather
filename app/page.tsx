@@ -164,8 +164,9 @@ export default function Home() {
               height="100%"
               mapStyle="dark"
               key={`map-${currentRace.id}`}
-              showPrecipitation={true}
-              showClouds={true}
+              showPrecipitation={false}
+              showClouds={false}
+              defer
             />
           </div>
         )}
@@ -248,10 +249,11 @@ export default function Home() {
             aria-label="Support on Ko-fi"
           >
             <img 
-              height='36' 
-              style={{border: 0, height: 36}} 
               src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' 
               alt='Buy Me a Coffee at ko-fi.com' 
+              width="143" 
+              height="36" 
+              style={{ border: 0, width: 143, height: 36 }}
             />
           </a>
         </div>
