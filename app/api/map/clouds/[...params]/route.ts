@@ -18,7 +18,7 @@ export async function GET(
     const yRaw = segments[segments.length - 1];
     
     if (!zRaw || !xRaw || !yRaw) {
-      console.error('Missing map parameters:', { z, x, y, path });
+      console.error('Missing map parameters:', { z: zRaw, x: xRaw, y: yRaw, path });
       return new Response('Invalid map parameters', { status: 400 });
     }
     
