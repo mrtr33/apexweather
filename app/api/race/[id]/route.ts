@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getRaceById, updateRaceWeather } from '@/app/lib/raceService';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request
 ) {
   try {
-    const raceId = params.id;
+    const url = new URL(request.url);
+    const segments = url.pathname.split('/').filter(Boolean);
+    const raceId = segments[segments.length - 1];
     const race = getRaceById(raceId);
     
     if (!race) {
@@ -27,11 +28,12 @@ export async function GET(
 }
 
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request
 ) {
   try {
-    const raceId = params.id;
+    const url = new URL(request.url);
+    const segments = url.pathname.split('/').filter(Boolean);
+    const raceId = segments[segments.length - 1];
     
     // Check if race exists
     const existingRace = getRaceById(raceId);
