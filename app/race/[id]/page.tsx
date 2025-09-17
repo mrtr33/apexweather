@@ -10,6 +10,7 @@ import WeatherForecast from '@/app/components/WeatherForecast';
 import Link from 'next/link';
 import DraggablePanel from '@/app/components/DraggablePanel';
 import FixedPanel from '@/app/components/FixedPanel';
+import TrackInfo from '@/app/components/TrackInfo';
 
 // Dynamically import the TrackMap to handle SSR issues
 const TrackMap = dynamic(() => import('@/app/components/TrackMap'), {
@@ -149,18 +150,19 @@ export default function RaceDetailPage() {
   return (
     <div className="fixed inset-0 flex p-0 m-0 bg-gray-900 text-gray-100">
       {/* Full-screen map background with lighter theme */}
-      <div className="w-full h-full lg:pr-[550px]">
+      <div className="w-full h-full lg:pr-[560px]">
         {race && <TrackMap 
           race={race} 
           height="100vh" 
           mapStyle="dark"
-          showPrecipitation={true}
-          showClouds={true}
+          showPrecipitation={false}
+          showClouds={false}
+          defer
         />}
       </div>
       
       {/* Fixed information panel */}
-      <FixedPanel title="Race Information" width="550px">
+      <FixedPanel title="Race Information" width="560px">
         {/* Header and series selector */}
         <div className="p-5 border-b border-gray-800">
           <div className="flex justify-between items-center">
@@ -199,7 +201,7 @@ export default function RaceDetailPage() {
         </div>
         
         {/* Tabbed interface */}
-        <div className="flex border-b border-gray-800">
+        <div className="flex border-b border-gray-800 sticky top-10 bg-gray-900/90 backdrop-blur z-10">
           <button 
             className={`flex-1 py-3 text-center ${!showWeatherDetails ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
             onClick={() => setShowWeatherDetails(false)}
@@ -237,7 +239,7 @@ export default function RaceDetailPage() {
                 </p>
               </div>
               
-              <div>
+              <div className="space-y-4">
                 <WeatherForecast 
                   lat={race.location.coordinates.lat} 
                   lng={race.location.coordinates.lng}
@@ -245,6 +247,7 @@ export default function RaceDetailPage() {
                   existingWeather={race.weatherData}
                   darkMode={true}
                 />
+                <TrackInfo race={race} />
               </div>
             </div>
           ) : (

@@ -56,12 +56,22 @@ function FixedPanel({
           transition: 'height 0.3s'
         }}
       >
-        {/* Panel controls in header */}
+        {/* Floating minimize/expand button (visible and large for mobile) */}
+        <button
+          onClick={toggleMinimized}
+          className="absolute top-2 left-2 z-30 h-9 px-3 rounded-md bg-gray-800/90 text-gray-100 text-sm font-medium"
+          aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
+          title={isMinimized ? 'Expand panel' : 'Minimize panel'}
+        >
+          {isMinimized ? 'Expand' : 'Minimize'}
+        </button>
+        {/* Retain small icon control on the right */}
         <div className="absolute top-0 right-2 flex items-center h-10 z-20">
           <button 
             onClick={toggleMinimized} 
-            className="text-gray-400 hover:text-white p-1"
+            className="text-gray-200 hover:text-white p-2 rounded-md bg-gray-800/80"
             title={isMinimized ? "Expand" : "Minimize"}
+            aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
           >
             {isMinimized ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,12 +110,25 @@ function FixedPanel({
         transition: 'width 0.3s, height 0.3s'
       }}
     >
-      {/* Panel controls in header */}
+      {/* Floating minimize/expand button on desktop - ensure visible above content */}
+      <div className="absolute top-2 left-2 z-30">
+        <button
+          onClick={toggleMinimized}
+          className="h-8 px-3 rounded-md bg-gray-800/90 text-gray-100 text-xs font-medium"
+          aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
+          title={isMinimized ? 'Expand panel' : 'Minimize panel'}
+        >
+          {isMinimized ? 'Expand' : 'Minimize'}
+        </button>
+      </div>
+
+      {/* Small icon control on the right */}
       <div className="absolute top-0 right-2 flex items-center h-10 z-20">
         <button 
           onClick={toggleMinimized} 
-          className="text-gray-400 hover:text-white p-1"
+          className="text-gray-200 hover:text-white p-2 rounded-md bg-gray-800/80"
           title={isMinimized ? "Expand" : "Minimize"}
+          aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
         >
           {isMinimized ? (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

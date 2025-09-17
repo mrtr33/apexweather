@@ -5,9 +5,9 @@ ApexWeather is a web application that provides real-time weather updates for maj
 ## Features
 
 - **Multiple Motorsport Series**: Track weather for Formula 1, World Rally Championship, NASCAR, and MotoGP.
-- **Real-time Weather Updates**: Get the latest temperature, rain chance, wind speed, air pressure, and humidity data.
-- **Race Schedule**: View upcoming and past races for the current season.
-- **Responsive Design**: Works well on desktop and mobile devices.
+- **Real-time Weather Updates**: Temperature, rain chance, wind speed, air pressure, humidity.
+- **Comprehensive Track Details**: Complete track information including length, number of turns, elevation change, direction, and lap records for all tracks across all series.
+- **Mobile-friendly UI**: Sticky headers, larger tap targets, and a minimize panel toggle.
 
 ## Technologies Used
 
@@ -82,7 +82,6 @@ apexweather/
 - User accounts to save favorite series and receive notifications
 - Historical weather data for past races
 - Additional motorsport series
-- Detailed track information and maps
 
 ## License
 

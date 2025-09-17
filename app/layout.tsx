@@ -18,6 +18,20 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ApexWeather - Motorsport Weather Tracker",
   description: "Real-time weather updates for Formula 1, WRC, and MotoGP racing events",
+  applicationName: "ApexWeather",
+  keywords: ["motorsport", "weather", "F1", "WRC", "MotoGP", "racing"],
+  openGraph: {
+    title: "ApexWeather - Motorsport Weather Tracker",
+    description: "Track conditions, forecasts, and detailed circuit info",
+    url: "https://apexweather.live",
+    siteName: "ApexWeather",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ApexWeather - Motorsport Weather Tracker",
+    description: "Track conditions, forecasts, and detailed circuit info"
+  },
 };
 
 export default function RootLayout({

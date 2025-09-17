@@ -18,6 +18,13 @@ const f1RaceEvents: RaceEvent[] = [
         lng: 144.968,
       },
     },
+    track: {
+      lengthKm: 5.278,
+      turns: 14,
+      elevationChangeM: 2,
+      direction: 'clockwise',
+      lapRecord: '1:20.260 (2023)',
+    },
     weatherData: {
       temperature: 22,
       rainChance: 15,
@@ -41,6 +48,13 @@ const f1RaceEvents: RaceEvent[] = [
         lat: 31.3389,
         lng: 121.2205,
       },
+    },
+    track: {
+      lengthKm: 5.451,
+      turns: 16,
+      elevationChangeM: 4,
+      direction: 'clockwise',
+      lapRecord: '1:32.238 (2004)',
     },
     weatherData: {
       temperature: 18,
@@ -66,6 +80,13 @@ const f1RaceEvents: RaceEvent[] = [
         lng: 136.5410,
       },
     },
+    track: {
+      lengthKm: 5.807,
+      turns: 18,
+      elevationChangeM: 40,
+      direction: 'clockwise',
+      lapRecord: '1:30.983 (2019)',
+    },
     weatherData: {
       temperature: 16,
       rainChance: 25,
@@ -89,6 +110,13 @@ const f1RaceEvents: RaceEvent[] = [
         lat: 26.0325,
         lng: 50.5106,
       },
+    },
+    track: {
+      lengthKm: 5.412,
+      turns: 15,
+      elevationChangeM: 17,
+      direction: 'clockwise',
+      lapRecord: '1:31.447 (2005)',
     },
     weatherData: {
       temperature: 26,
@@ -598,6 +626,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: 6.0789,
       },
     },
+    track: {
+      lengthKm: 325.02,
+      turns: 17,
+      elevationChangeM: 1607,
+      direction: 'mixed',
+      lapRecord: '3:18:04.0 (2024)',
+    },
     weatherData: {
       temperature: 5,
       rainChance: 20,
@@ -621,6 +656,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 63.8258,
         lng: 20.2630,
       },
+    },
+    track: {
+      lengthKm: 300.10,
+      turns: 19,
+      elevationChangeM: 200,
+      direction: 'mixed',
+      lapRecord: '2:48:28.3 (2024)',
     },
     weatherData: {
       temperature: -5,
@@ -646,6 +688,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: 36.8219,
       },
     },
+    track: {
+      lengthKm: 355.92,
+      turns: 19,
+      elevationChangeM: 1800,
+      direction: 'mixed',
+      lapRecord: '3:18:24.0 (2024)',
+    },
     weatherData: {
       temperature: 28,
       rainChance: 35,
@@ -669,6 +718,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 28.1248,
         lng: -15.4300,
       },
+    },
+    track: {
+      lengthKm: 280.98,
+      turns: 18,
+      elevationChangeM: 1200,
+      direction: 'mixed',
+      lapRecord: '2:35:42.1 (2024)',
     },
     weatherData: {
       temperature: 21,
@@ -694,6 +750,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: -8.6951,
       },
     },
+    track: {
+      lengthKm: 325.88,
+      turns: 22,
+      elevationChangeM: 800,
+      direction: 'mixed',
+      lapRecord: '3:05:15.9 (2024)',
+    },
     weatherData: {
       temperature: 20,
       rainChance: 15,
@@ -717,6 +780,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 40.9239,
         lng: 9.4907,
       },
+    },
+    track: {
+      lengthKm: 303.10,
+      turns: 20,
+      elevationChangeM: 600,
+      direction: 'mixed',
+      lapRecord: '2:48:32.1 (2024)',
     },
     weatherData: {
       temperature: 23,
@@ -742,6 +812,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: 22.4334,
       },
     },
+    track: {
+      lengthKm: 303.30,
+      turns: 16,
+      elevationChangeM: 1000,
+      direction: 'mixed',
+      lapRecord: '2:48:15.2 (2024)',
+    },
     weatherData: {
       temperature: 30,
       rainChance: 5,
@@ -765,6 +842,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 58.3780,
         lng: 26.7290,
       },
+    },
+    track: {
+      lengthKm: 314.26,
+      turns: 24,
+      elevationChangeM: 300,
+      direction: 'mixed',
+      lapRecord: '2:51:23.4 (2024)',
     },
     weatherData: {
       temperature: 22,
@@ -790,6 +874,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: 25.7473,
       },
     },
+    track: {
+      lengthKm: 320.56,
+      turns: 22,
+      elevationChangeM: 400,
+      direction: 'mixed',
+      lapRecord: '2:44:14.3 (2024)',
+    },
     weatherData: {
       temperature: 20,
       rainChance: 25,
@@ -813,6 +904,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: -27.3306,
         lng: -55.8667,
       },
+    },
+    track: {
+      lengthKm: 303.78,
+      turns: 18,
+      elevationChangeM: 200,
+      direction: 'mixed',
+      lapRecord: '2:52:18.7 (2024)',
     },
     weatherData: {
       temperature: 26,
@@ -838,6 +936,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: -73.0498,
       },
     },
+    track: {
+      lengthKm: 321.18,
+      turns: 16,
+      elevationChangeM: 800,
+      direction: 'mixed',
+      lapRecord: '3:05:42.8 (2024)',
+    },
     weatherData: {
       temperature: 16,
       rainChance: 40,
@@ -861,6 +966,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 48.4433,
         lng: 13.1989,
       },
+    },
+    track: {
+      lengthKm: 280.42,
+      turns: 18,
+      elevationChangeM: 500,
+      direction: 'mixed',
+      lapRecord: '2:38:15.6 (2024)',
     },
     weatherData: {
       temperature: 12,
@@ -886,6 +998,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lng: 137.1570,
       },
     },
+    track: {
+      lengthKm: 303.78,
+      turns: 20,
+      elevationChangeM: 600,
+      direction: 'mixed',
+      lapRecord: '2:55:42.1 (2024)',
+    },
     weatherData: {
       temperature: 14,
       rainChance: 45,
@@ -909,6 +1028,13 @@ const wrcRaceEvents: RaceEvent[] = [
         lat: 21.4858,
         lng: 39.1925,
       },
+    },
+    track: {
+      lengthKm: 320.12,
+      turns: 17,
+      elevationChangeM: 300,
+      direction: 'mixed',
+      lapRecord: '2:58:15.3 (2024)',
     },
     weatherData: {
       temperature: 28,
@@ -938,6 +1064,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 103.0777,
       },
     },
+    track: {
+      lengthKm: 4.554,
+      turns: 12,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:30.904 (2023)',
+    },
     weatherData: {
       temperature: 32,
       rainChance: 15,
@@ -961,6 +1094,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: -27.5089,
         lng: -64.9158,
       },
+    },
+    track: {
+      lengthKm: 4.805,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:37.155 (2023)',
     },
     weatherData: {
       temperature: 24,
@@ -986,6 +1126,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: -97.6411,
       },
     },
+    track: {
+      lengthKm: 5.513,
+      turns: 20,
+      elevationChangeM: 41,
+      direction: 'counter-clockwise',
+      lapRecord: '2:02.135 (2023)',
+    },
     weatherData: {
       temperature: 23,
       rainChance: 15,
@@ -1009,6 +1156,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 25.4882,
         lng: 51.4541,
       },
+    },
+    track: {
+      lengthKm: 5.380,
+      turns: 16,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:52.772 (2023)',
     },
     weatherData: {
       temperature: 27,
@@ -1034,6 +1188,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: -6.0415,
       },
     },
+    track: {
+      lengthKm: 4.428,
+      turns: 13,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:37.709 (2023)',
+    },
     weatherData: {
       temperature: 22,
       rainChance: 5,
@@ -1057,6 +1218,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 47.9561,
         lng: 0.2266,
       },
+    },
+    track: {
+      lengthKm: 4.185,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:31.185 (2023)',
     },
     weatherData: {
       temperature: 18,
@@ -1082,6 +1250,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: -1.0169,
       },
     },
+    track: {
+      lengthKm: 5.891,
+      turns: 18,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:58.168 (2023)',
+    },
     weatherData: {
       temperature: 17,
       rainChance: 40,
@@ -1105,6 +1280,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 41.0782,
         lng: -0.2013,
       },
+    },
+    track: {
+      lengthKm: 5.077,
+      turns: 17,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:47.187 (2023)',
     },
     weatherData: {
       temperature: 26,
@@ -1130,6 +1312,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 11.3719,
       },
     },
+    track: {
+      lengthKm: 5.245,
+      turns: 15,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:45.187 (2023)',
+    },
     weatherData: {
       temperature: 25,
       rainChance: 10,
@@ -1153,6 +1342,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 52.9612,
         lng: 6.5250,
       },
+    },
+    track: {
+      lengthKm: 4.542,
+      turns: 18,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:32.500 (2023)',
     },
     weatherData: {
       temperature: 21,
@@ -1178,6 +1374,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 12.6913,
       },
     },
+    track: {
+      lengthKm: 3.671,
+      turns: 13,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:20.195 (2023)',
+    },
     weatherData: {
       temperature: 24,
       rainChance: 25,
@@ -1201,6 +1404,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 49.2046,
         lng: 16.4506,
       },
+    },
+    track: {
+      lengthKm: 5.403,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:56.027 (2023)',
     },
     weatherData: {
       temperature: 25,
@@ -1226,6 +1436,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 14.7647,
       },
     },
+    track: {
+      lengthKm: 4.318,
+      turns: 10,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:23.827 (2023)',
+    },
     weatherData: {
       temperature: 26,
       rainChance: 30,
@@ -1249,6 +1466,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 46.9929,
         lng: 18.2315,
       },
+    },
+    track: {
+      lengthKm: 4.381,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:35.123 (2023)',
     },
     weatherData: {
       temperature: 27,
@@ -1274,6 +1498,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 2.2608,
       },
     },
+    track: {
+      lengthKm: 4.657,
+      turns: 16,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:38.742 (2023)',
+    },
     weatherData: {
       temperature: 25,
       rainChance: 10,
@@ -1297,6 +1528,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 43.9611,
         lng: 12.6839,
       },
+    },
+    track: {
+      lengthKm: 4.226,
+      turns: 16,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:31.065 (2023)',
     },
     weatherData: {
       temperature: 24,
@@ -1322,6 +1560,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 140.2277,
       },
     },
+    track: {
+      lengthKm: 4.801,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:45.350 (2023)',
+    },
     weatherData: {
       temperature: 22,
       rainChance: 25,
@@ -1345,6 +1590,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: -8.8965,
         lng: 116.3017,
       },
+    },
+    track: {
+      lengthKm: 4.310,
+      turns: 17,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:30.170 (2023)',
     },
     weatherData: {
       temperature: 30,
@@ -1370,6 +1622,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: 145.2329,
       },
     },
+    track: {
+      lengthKm: 4.448,
+      turns: 12,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:28.108 (2023)',
+    },
     weatherData: {
       temperature: 18,
       rainChance: 35,
@@ -1393,6 +1652,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lat: 2.7602,
         lng: 101.7382,
       },
+    },
+    track: {
+      lengthKm: 5.543,
+      turns: 15,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:58.168 (2023)',
     },
     weatherData: {
       temperature: 32,
@@ -1418,6 +1684,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: -8.6267,
       },
     },
+    track: {
+      lengthKm: 4.653,
+      turns: 15,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:38.725 (2023)',
+    },
     weatherData: {
       temperature: 19,
       rainChance: 30,
@@ -1442,6 +1715,13 @@ const motoGPRaceEvents: RaceEvent[] = [
         lng: -0.6271,
       },
     },
+    track: {
+      lengthKm: 4.005,
+      turns: 14,
+      elevationChangeM: 0,
+      direction: 'clockwise',
+      lapRecord: '1:29.401 (2023)',
+    },
     weatherData: {
       temperature: 17,
       rainChance: 20,
@@ -1455,7 +1735,7 @@ const motoGPRaceEvents: RaceEvent[] = [
 ];
 
 // Combined series data
-export const seriesData: SeriesData[] = [
+const rawSeriesData: SeriesData[] = [
   {
     id: 'f1',
     name: 'Formula 1',
@@ -1476,6 +1756,31 @@ export const seriesData: SeriesData[] = [
   },
 ];
 
+// Enrich all races with basic track metadata if missing
+function enrichTrackMetadata(seriesList: SeriesData[]): SeriesData[] {
+  return seriesList.map(series => ({
+    ...series,
+    races: series.races.map(race => {
+      if (race.track && race.track.website) {
+        return race;
+      }
+      const coords = race.location?.coordinates;
+      const website = coords 
+        ? `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}` 
+        : undefined;
+      return {
+        ...race,
+        track: {
+          ...race.track,
+          website: race.track?.website || website
+        }
+      };
+    })
+  }));
+}
+
+export const seriesData: SeriesData[] = enrichTrackMetadata(rawSeriesData);
+
 export function getSeriesById(id: string): SeriesData | undefined {
   return seriesData.find(series => series.id === id);
-} 
+}

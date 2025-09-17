@@ -5,6 +5,7 @@ import { seriesData } from './lib/sampleData';
 import { RaceEvent, SeriesData } from './types';
 import dynamic from 'next/dynamic';
 import WeatherForecast from './components/WeatherForecast';
+import TrackInfo from './components/TrackInfo';
 
 // Dynamically import the TrackMap to handle SSR issues
 const TrackMap = dynamic(() => import('./components/TrackMap'), {
@@ -24,6 +25,7 @@ export default function Home() {
   const [selectedRaceId, setSelectedRaceId] = useState<string | null>(null);
   const [currentRace, setCurrentRace] = useState<RaceEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInfoMinimized, setIsInfoMinimized] = useState(false);
 
   // Pre-calculate upcoming races - memoize to avoid recalculation
   const upcomingRaces = useMemo(() => {
@@ -156,7 +158,7 @@ export default function Home() {
   return (
     <div className="fixed inset-0 flex flex-col md:flex-row h-screen w-screen bg-gray-900 text-gray-100">
       {/* Left side - Map (taking full width on mobile, about 70% on larger screens) */}
-      <div className="h-[40vh] md:h-full md:flex-grow border-b md:border-b-0 md:border-r border-gray-700">
+      <div className={`${isInfoMinimized ? 'h-full' : 'h-[40vh]'} md:h-full md:flex-grow border-b md:border-b-0 md:border-r border-gray-700 transition-all duration-300`}>
         {currentRace && currentRace.location && currentRace.location.coordinates && (
           <div className="w-full h-full flex items-center justify-center text-center">
             <TrackMap 
@@ -172,92 +174,226 @@ export default function Home() {
         )}
       </div>
       
-      {/* Right side - Information panels (full width on mobile, fixed width on desktop) */}
-      <div className="h-[60vh] md:h-full w-full md:w-[450px] flex flex-col bg-gray-900 overflow-hidden">
-        {/* Header */}
-        <div className="p-3 md:p-4 border-b border-gray-700 flex-shrink-0">
-          <h1 className="text-xl font-bold text-center">TrackWeather</h1>
-        </div>
-        
-        {/* Series Selection */}
-        <div className="p-3 md:p-4 border-b border-gray-700 flex-shrink-0">
-          <select 
-            value={selectedSeriesId}
-            onChange={(e) => handleSeriesSelect(e.target.value)}
-            className="w-full bg-gray-800 text-white py-2 px-3 rounded-md text-center"
-            aria-label="Select racing series"
-          >
-            {allSeries.map(series => (
-              <option key={series.id} value={series.id}>
-                {series.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        {/* Scrollable content container */}
-        <div className="flex-1 overflow-y-auto">
-          {/* Race Information */}
-          <div className="p-3 md:p-4 border-b border-gray-700">
-            <h2 className="text-lg font-semibold mb-2">Race Information</h2>
-            <div className="space-y-2 text-sm">
-              <p>
-                <span className="text-gray-400">Event:</span> {currentRace.name}
-              </p>
-              {currentRace.location && (
-                <>
-                  <p>
-                    <span className="text-gray-400">Location:</span> {currentRace.location.name}, {currentRace.location.city}, {currentRace.location.country}
-                  </p>
-                  <p>
-                    <span className="text-gray-400">Circuit:</span> {currentRace.location.name}
-                  </p>
-                  {currentRace.location.coordinates && (
-                    <p>
-                      <span className="text-gray-400">Coordinates:</span> {currentRace.location.coordinates.lat.toFixed(4)}, {currentRace.location.coordinates.lng.toFixed(4)}
-                    </p>
-                  )}
-                </>
-              )}
-              <p>
-                <span className="text-gray-400">Date:</span> {new Date(currentRace.date).toLocaleDateString()}
-              </p>
+      {/* Mobile Panel - Completely separate from desktop */}
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 transition-transform duration-300 z-30 ${isInfoMinimized ? 'translate-y-full' : 'translate-y-0'}`}>
+        <div className="h-[60vh] flex flex-col">
+          {/* Mobile Header */}
+          <div className="p-3 border-b border-gray-700 flex-shrink-0">
+            <div className="flex items-center justify-center">
+              <h1 className="text-xl font-bold">ApexWeather</h1>
             </div>
           </div>
           
-          {/* Weather Information */}
-          <div className="p-3 md:p-4">
-            <h2 className="text-lg font-semibold mb-2 md:mb-4">Weather Information</h2>
-            {currentRace && currentRace.location && currentRace.location.coordinates && (
-              <WeatherForecast 
-                lat={currentRace.location.coordinates.lat}
-                lng={currentRace.location.coordinates.lng}
-                locationName={`${currentRace.location.name}, ${currentRace.location.city}`}
-                darkMode={true}
-                existingWeather={currentRace.weatherData}
+          {/* Mobile Series Selection */}
+          <div className="p-3 border-b border-gray-700 flex-shrink-0">
+            <select 
+              value={selectedSeriesId}
+              onChange={(e) => handleSeriesSelect(e.target.value)}
+              className="w-full bg-gray-800 text-white py-3 px-3 rounded-md text-center text-base"
+              aria-label="Select racing series"
+            >
+              {allSeries.map(series => (
+                <option key={series.id} value={series.id}>
+                  {series.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Mobile Content */}
+          <div className="flex-1 overflow-y-auto">
+            {/* Race Information */}
+            <div className="p-3 border-b border-gray-700">
+              <h2 className="text-lg font-semibold mb-2">Race Information</h2>
+              <div className="space-y-2 text-sm">
+                <p>
+                  <span className="text-gray-400">Event:</span> {currentRace.name}
+                </p>
+                {currentRace.location && (
+                  <>
+                    <p>
+                      <span className="text-gray-400">Location:</span> {currentRace.location.name}, {currentRace.location.city}, {currentRace.location.country}
+                    </p>
+                    <p>
+                      <span className="text-gray-400">Circuit:</span> {currentRace.location.name}
+                    </p>
+                  </>
+                )}
+                <p>
+                  <span className="text-gray-400">Date:</span> {new Date(currentRace.date).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            
+            {/* Weather Information */}
+            <div className="p-3 space-y-4">
+              <h2 className="text-lg font-semibold mb-2">Weather Information</h2>
+              {currentRace && currentRace.location && currentRace.location.coordinates && (
+                <WeatherForecast 
+                  lat={currentRace.location.coordinates.lat}
+                  lng={currentRace.location.coordinates.lng}
+                  locationName={`${currentRace.location.name}, ${currentRace.location.city}`}
+                  darkMode={true}
+                  existingWeather={currentRace.weatherData}
+                />
+              )}
+              <TrackInfo race={currentRace} />
+            </div>
+          </div>
+          
+          {/* Mobile Ko-fi Support Button */}
+          <div className="p-3 border-t border-gray-700 flex justify-center flex-shrink-0">
+            <a 
+              href='https://ko-fi.com/E1E61DD630' 
+              target='_blank' 
+              rel="noreferrer noopener"
+              aria-label="Support on Ko-fi"
+            >
+              <img 
+                src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' 
+                alt='Buy Me a Coffee at ko-fi.com' 
+                width="143" 
+                height="36" 
+                style={{ border: 0, width: 143, height: 36 }}
               />
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      {/* Desktop Panel - Completely separate from mobile */}
+      <div className={`hidden md:flex ${isInfoMinimized ? 'md:w-[64px]' : 'md:w-[480px]'} md:h-full flex-col bg-gray-900 border-l border-gray-700 transition-all duration-300`}>
+        {/* Desktop Header */}
+        <div className="p-4 border-b border-gray-700 flex-shrink-0">
+          <div className="flex items-center justify-center gap-3">
+            {!isInfoMinimized ? (
+              <>
+                <h1 className="text-2xl font-bold">ApexWeather</h1>
+                <button
+                  onClick={() => setIsInfoMinimized(!isInfoMinimized)}
+                  className="h-8 w-8 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
+                  aria-label="Minimize panel"
+                  title="Minimize panel"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setIsInfoMinimized(!isInfoMinimized)}
+                className="h-8 w-8 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
+                aria-label="Expand panel"
+                title="Expand panel"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
             )}
           </div>
         </div>
         
-        {/* Ko-fi Support Button */}
-        <div className="p-3 md:p-4 border-t border-gray-700 flex justify-center flex-shrink-0">
-          <a 
-            href='https://ko-fi.com/E1E61DD630' 
-            target='_blank' 
-            rel="noreferrer noopener"
-            aria-label="Support on Ko-fi"
-          >
-            <img 
-              src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' 
-              alt='Buy Me a Coffee at ko-fi.com' 
-              width="143" 
-              height="36" 
-              style={{ border: 0, width: 143, height: 36 }}
-            />
-          </a>
-        </div>
+        {/* Desktop Content - Only show when not minimized */}
+        {!isInfoMinimized && (
+          <>
+            {/* Desktop Series Selection */}
+            <div className="p-4 border-b border-gray-700 flex-shrink-0">
+              <select 
+                value={selectedSeriesId}
+                onChange={(e) => handleSeriesSelect(e.target.value)}
+                className="w-full bg-gray-800 text-white py-3 px-3 rounded-md text-center text-base"
+                aria-label="Select racing series"
+              >
+                {allSeries.map(series => (
+                  <option key={series.id} value={series.id}>
+                    {series.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Desktop Content */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Race Information */}
+              <div className="p-4 border-b border-gray-700">
+                <h2 className="text-lg font-semibold mb-2">Race Information</h2>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <span className="text-gray-400">Event:</span> {currentRace.name}
+                  </p>
+                  {currentRace.location && (
+                    <>
+                      <p>
+                        <span className="text-gray-400">Location:</span> {currentRace.location.name}, {currentRace.location.city}, {currentRace.location.country}
+                      </p>
+                      <p>
+                        <span className="text-gray-400">Circuit:</span> {currentRace.location.name}
+                      </p>
+                    </>
+                  )}
+                  <p>
+                    <span className="text-gray-400">Date:</span> {new Date(currentRace.date).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Weather Information */}
+              <div className="p-4 space-y-4">
+                <h2 className="text-lg font-semibold mb-4">Weather Information</h2>
+                {currentRace && currentRace.location && currentRace.location.coordinates && (
+                  <WeatherForecast 
+                    lat={currentRace.location.coordinates.lat}
+                    lng={currentRace.location.coordinates.lng}
+                    locationName={`${currentRace.location.name}, ${currentRace.location.city}`}
+                    darkMode={true}
+                    existingWeather={currentRace.weatherData}
+                  />
+                )}
+                <TrackInfo race={currentRace} />
+              </div>
+            </div>
+            
+            {/* Desktop Ko-fi Support Button */}
+            <div className="p-4 border-t border-gray-700 flex justify-center flex-shrink-0">
+              <a 
+                href='https://ko-fi.com/E1E61DD630' 
+                target='_blank' 
+                rel="noreferrer noopener"
+                aria-label="Support on Ko-fi"
+              >
+                <img 
+                  src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' 
+                  alt='Buy Me a Coffee at ko-fi.com' 
+                  width="143" 
+                  height="36" 
+                  style={{ border: 0, width: 143, height: 36 }}
+                />
+              </a>
+            </div>
+          </>
+        )}
       </div>
+      
+      {/* Mobile Floating Button - Only visible on mobile */}
+      <button
+        onClick={() => setIsInfoMinimized(!isInfoMinimized)}
+        className="md:hidden fixed bottom-4 right-4 z-[9999] h-12 w-12 flex items-center justify-center rounded-full bg-blue-600 text-white shadow-2xl hover:bg-blue-700 transition-colors"
+        style={{ zIndex: 9999 }}
+        aria-label={isInfoMinimized ? 'Expand panel' : 'Minimize panel'}
+        title={isInfoMinimized ? 'Expand panel' : 'Minimize panel'}
+      >
+        {isInfoMinimized ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

@@ -99,6 +99,19 @@ function LeafletMap({ race, height, fullscreen = false, darkMode = false, mapSty
       }
     }, [mapInstance]);
     
+    // Invalidate map size on container resize (covers sidebar collapse/expand)
+    useEffect(() => {
+      const container: HTMLElement | null = mapInstance.getContainer?.() || null;
+      if (!container) return;
+      const observer = new ResizeObserver(() => {
+        try {
+          mapInstance.invalidateSize();
+        } catch {}
+      });
+      observer.observe(container);
+      return () => observer.disconnect();
+    }, [mapInstance]);
+
     useEffect(() => {
       // Initialize the precipitation and clouds layers with their initial values
       if (map) {

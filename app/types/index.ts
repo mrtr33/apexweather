@@ -24,6 +24,14 @@ export interface RaceEvent {
       lng: number;
     };
   };
+  track?: {
+    lengthKm?: number;
+    turns?: number;
+    elevationChangeM?: number;
+    direction?: 'clockwise' | 'counter-clockwise' | 'mixed';
+    lapRecord?: string;
+    website?: string;
+  };
   weatherData?: WeatherData;
   updatedAt: string;
 }
