@@ -59,10 +59,6 @@ const nextConfig = {
       }
     ]
   },
-  env: {
-    // Make environment variables available at build time
-    OPENWEATHERMAP_API_KEY: process.env.OPENWEATHERMAP_API_KEY,
-  },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },

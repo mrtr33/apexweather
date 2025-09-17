@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { WeatherData } from '../types';
 import { FixedSizeList as List } from 'react-window';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 
 // Remove problematic imports until we install them
 // import { FixedSizeList as List } from 'react-window';
@@ -426,7 +426,7 @@ export default function WeatherForecast({ lat, lng, locationName, existingWeathe
   };
 
   // Use debouncing for refresh
-  const [debouncedRefresh] = useDebounce(fetchFreshWeather, 5000);
+  const debouncedRefresh = useDebouncedCallback(fetchFreshWeather, 5000);
 
   if (loading && !current) {
     return (

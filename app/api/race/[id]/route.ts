@@ -3,11 +3,10 @@ import { getRaceById, updateRaceWeather } from '@/app/lib/raceService';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const resolvedParams = await params;
-    const raceId = resolvedParams.id;
+    const raceId = params.id;
     const race = getRaceById(raceId);
     
     if (!race) {
@@ -29,11 +28,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const resolvedParams = await params;
-    const raceId = resolvedParams.id;
+    const raceId = params.id;
     
     // Check if race exists
     const existingRace = getRaceById(raceId);

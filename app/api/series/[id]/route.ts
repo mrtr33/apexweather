@@ -3,12 +3,10 @@ import { getSeriesById } from '@/app/lib/sampleData';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    // In the new Next.js version, params is a Promise, so we await it
-    const resolvedParams = await params;
-    const seriesId = resolvedParams.id;
+    const seriesId = params.id;
     const series = getSeriesById(seriesId);
     
     if (!series) {
